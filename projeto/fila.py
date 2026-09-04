@@ -6,72 +6,76 @@ STATUS_EVASAO = "evasao"
 
 class Sistema:
     def __init__(self):
-        self.fichas = {}
+        self.pacientes = {}
         self.ultimo_chamado = None
 
-    def  cadastrar_ficha_simulada(self, numero_ficha):
-        if numero_ficha in self.fichas:
-            print(f"Ficha {numero_ficha} já está cadastrada.")
+    def  cadastrar_ficha_simulada(self, nome_paciente):
+        if nome_paciente in self.pacientes:
+            print(f"Paciente {nome_paciente} já está cadastrado.")
             return False
-        self.fichas[numero_ficha] = {"status": STATUS_AGUARDANDO}
+        self.pacientes[nome_paciente] = {"status": STATUS_AGUARDANDO}
         return True
 
     def chamar_proxima_ficha(self):
-        for numero_ficha, ficha in self.fichas.items():
+        for nome_paciente, ficha in self.pacientes.items():
             if ficha["status"] == STATUS_AGUARDANDO:
                 ficha["status"] = STATUS_CHAMADO
-                self.ultimo_chamado = numero_ficha
-                return numero_ficha
+                self.ultimo_chamado = nome_paciente
+                return nome_paciente
         return None
 
-    def rechamar_ficha(self, numero_ficha):
-        if numero_ficha in self.fichas and self.fichas[numero_ficha]["status"] == STATUS_CHAMADO:
-            print(f"Ficha {numero_ficha} foi rechamada.")
+    def rechamar_ficha(self, nome_paciente):
+        if nome_paciente in self.pacientes and self.pacientes[nome_paciente]["status"] == STATUS_CHAMADO:
+            print(f"Paciente {nome_paciente} foi rechamado.")
             return True
         return False
 
-    def registrar_atendimento(self, numero_ficha):
-        if numero_ficha in self.fichas and self.fichas[numero_ficha]["status"] == STATUS_CHAMADO:
-            self.fichas[numero_ficha]["status"] = STATUS_ATENDIDO
+    def registrar_atendimento(self, nome_paciente):
+        if nome_paciente in self.pacientes and self.pacientes[nome_paciente]["status"] == STATUS_CHAMADO:
+            self.pacientes[nome_paciente]["status"] = STATUS_ATENDIDO
             return True
         return False
-    
-    def registrar_evasao(self, numero_ficha):
-        if numero_ficha in self.fichas and self.fichas[numero_ficha]["status"] == STATUS_CHAMADO:
-            self.fichas[numero_ficha]["status"] = STATUS_EVASAO
+
+    def registrar_evasao(self, nome_paciente):
+        if nome_paciente in self.pacientes and self.pacientes[nome_paciente]["status"] == STATUS_CHAMADO:
+            self.pacientes[nome_paciente]["status"] = STATUS_EVASAO
             return True
         return False
 
     def visualizar_pacientes_aguardando(self):
         aguardando = []
-        for numero_ficha, ficha in self.fichas.items():
+        for nome_paciente, ficha in self.pacientes.items():
             if ficha["status"] == STATUS_AGUARDANDO:
-                print(f"Ficha {numero_ficha}: Aguardando")
-                aguardando.append(numero_ficha)
+                print(f"Paciente {nome_paciente}: Aguardando")
+                aguardando.append(nome_paciente)
         if not aguardando:
             print("Não há pacientes aguardando.")
 
-    def consultar_posicao(self, numero_ficha):
-        if numero_ficha not in self.fichas:
-            print(f"Ficha {numero_ficha} não encontrada.")
+    def consultar_posicao(self, nome):
+        if nome not in self.pacientes:
+            print(f"Paciente {nome} não encontrado.")
             return None
-        ficha_consultada = self.fichas[numero_ficha]
-        if ficha_consultada["status"] != STATUS_AGUARDANDO:
-            print(f"Ficha {numero_ficha}: Status atual é '{ficha_consultada['status']}'. Não está na fila.")
-            return 0
-        posicao = 0
-        for ficha_numero, ficha in self.fichas.items():
-            if ficha["status"] == STATUS_AGUARDANDO:
-                posicao += 1
-            if ficha_numero == numero_ficha:
-                break
-        print(f"Ficha {numero_ficha}: Aguardando (Posição na fila: {posicao})")
-        return posicao
 
-    def consultar_estado(self, numero_ficha):
-        if numero_ficha in self.fichas:
-            status = self.fichas[numero_ficha]["status"]
-            print(f"Ficha {numero_ficha}: Status - {status}")
+        paciente_consultado = self.pacientes[nome]
+
+        if paciente_consultado["status"] != STATUS_AGUARDANDO:
+            print(f"Paciente {nome} não está aguardando.")
+            return 0
+
+        pessoas_a_frente = 0
+        for nome_paciente, paciente in self.pacientes.items():
+            if nome_paciente == nome:
+                break
+
+            if paciente["status"] == STATUS_AGUARDANDO:
+                pessoas_a_frente += 1
+
+        return pessoas_a_frente
+
+    def consultar_estado(self, nome_paciente):
+        if nome_paciente in self.pacientes:
+            status = self.pacientes[nome_paciente]["status"]
+            print(f"Paciente {nome_paciente}: Status - {status}")
             return status
         else:
-            print(f"Ficha {numero_ficha} não encontrada.")
+            print(f"Paciente {nome_paciente} não encontrado.")

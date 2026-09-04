@@ -20,17 +20,17 @@ class Janela:
         self.fila_espera.pack(pady=10)
         self.atualizar_nomes_espera()
 
-        tk.Label(self.janela, text="Digite o número da ficha simulada:").pack(pady=10)
-        self.entrada_ficha = tk.Entry(self.janela)
-        self.entrada_ficha.pack(pady=10)
+        tk.Label(self.janela, text="Digite o nome do paciente:").pack(pady=10)
+        self.entrada_nome = tk.Entry(self.janela)
+        self.entrada_nome.pack(pady=10)
 
-        self.cadastrar = tk.Button(self.janela, text="Cadastrar Ficha Simulada", command=self.cadastrar_nome)
+        self.cadastrar = tk.Button(self.janela, text="Cadastrar paciente", command=self.cadastrar_nome)
         self.cadastrar.pack(pady=10)
 
-        self.chamar_proxima = tk.Button(self.janela, text="Chamar Próxima Ficha", command=self.chamar_proximo_nome)
+        self.chamar_proxima = tk.Button(self.janela, text="Chamar Próximo paciente", command=self.chamar_proximo_nome)
         self.chamar_proxima.pack(pady=20)
 
-        self.rechamar = tk.Button(self.janela, text="Rechamar Ficha", command=self.rechamar_ficha)
+        self.rechamar = tk.Button(self.janela, text="Rechamar paciente", command=self.rechamar_ficha)
         self.rechamar.pack(pady=20)
 
         self.registrar_atendimento = tk.Button(self.janela, text="Registrar Atendimento", command=self.registrar_atendimento)
@@ -45,11 +45,11 @@ class Janela:
         self.janela.mainloop()
 
     def cadastrar_nome(self):
-        nome = self.entrada_ficha.get()
+        nome = self.entrada_nome.get()
         if self.sistema.cadastrar_ficha_simulada(nome):
-            messagebox.showinfo("Informação", f"Ficha {nome} cadastrada com sucesso.")
+            messagebox.showinfo("Informação", f"Paciente {nome} cadastrado com sucesso.")
         else:
-            messagebox.showwarning("Aviso", f"Ficha {nome} já está cadastrada.")
+            messagebox.showwarning("Aviso", f"Paciente {nome} já está cadastrado.")
         
         self.atualizar_nomes_espera()
 
@@ -57,8 +57,8 @@ class Janela:
         self.fila_espera.config(
             text="Fila de espera: " + ", ".join(
                 [
-                    f"Ficha {numero}"
-                    for numero, ficha in self.sistema.fichas.items()
+                    f"Paciente {numero}"
+                    for numero, ficha in self.sistema.pacientes.items()
                     if ficha["status"] == "aguardando"
                 ]
             )
@@ -119,25 +119,21 @@ class JanelaPaciente:
         self.titulo = tk.Label(self.janela, text="AMBULATÓRIO UNIMAR", font=("Arial", 30))
         self.titulo.pack()
 
-        tk.Label(self.janela, text="Digite o número da ficha:").pack(pady=10)
-        self.entrada_ficha = tk.Entry(self.janela)
-        self.entrada_ficha.pack(pady=10)
+        tk.Label(self.janela, text="Digite o nome do paciente:").pack(pady=10)
+        self.entrada_nome = tk.Entry(self.janela)
+        self.entrada_nome.pack(pady=10)
 
-        self.consultar_posicao = tk.Button(self.janela, text="Consultar Posição na Fila", command=self.consultar_posicao)
-        self.consultar_posicao.pack(pady=20)
+        self.consultar_todos_dados = tk.Button(self.janela, text="Consultar dados", command=self.consultar_dados)
+        self.consultar_todos_dados.pack(pady=20)
 
-        self.consultar_estado = tk.Button(self.janela, text="Consultar Estado da Ficha", command=self.consultar_estado)
-        self.consultar_estado.pack(pady=20)
-
-
-    def consultar_posicao(self):
-        numero = self.entrada_ficha.get()
+    def consultar_dados(self):
+        numero = self.entrada_nome.get()
         posicao = self.sistema.consultar_posicao(numero)
-        if posicao is not None:
-            messagebox.showinfo("Informação", f"Ficha {numero}: Posição na fila - {posicao}")
 
-    def consultar_estado(self):
-        numero = self.entrada_ficha.get()
+        numero = self.entrada_nome.get()
         estado = self.sistema.consultar_estado(numero)
-        if estado is not None:
-            messagebox.showinfo("Informação", f"Ficha {numero}: Estado - {estado}")
+
+        if posicao is not None and estado is not None:
+            messagebox.showinfo("Informação", f"Paciente {numero}: Posição na fila - {posicao}, Estado - {estado}")
+        else:
+            messagebox.showinfo("Informação", f"Paciente {numero} não está na fila.")
