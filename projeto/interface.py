@@ -33,9 +33,6 @@ class Janela:
         self.rechamar = tk.Button(self.janela, text="Rechamar paciente", command=self.rechamar_ficha)
         self.rechamar.pack(pady=20)
 
-        self.registrar_atendimento = tk.Button(self.janela, text="Registrar Atendimento", command=self.registrar_atendimento)
-        self.registrar_atendimento.pack(pady=20)
-
         self.registrar_evasao = tk.Button(self.janela, text="Registrar Evasão", command=self.registrar_evasao)
         self.registrar_evasao.pack(pady=20)
 
@@ -84,18 +81,6 @@ class Janela:
         else:
             messagebox.showinfo("Informação", "Não há ficha para rechamar.")
 
-
-    def registrar_atendimento(self):
-        nome = self.sistema.ultimo_chamado
-
-        if nome:
-            if self.sistema.registrar_atendimento(nome):
-                messagebox.showinfo("Informação", f"Paciente {nome} registrada como atendido.")
-            else:
-                messagebox.showwarning("Aviso", f"Paciente {nome} não pode ser registrada como atendida.")
-        else:
-            messagebox.showinfo("Informação", "Não há ficha para registrar atendimento.")
-
     def registrar_evasao(self):
         nome = self.sistema.ultimo_chamado
 
@@ -134,6 +119,13 @@ class JanelaPaciente:
         estado = self.sistema.consultar_estado(numero)
 
         if posicao is not None and estado is not None:
-            messagebox.showinfo("Informação", f"Paciente {numero}: Posição na fila - {posicao}, Estado - {estado}")
+            if posicao == 0:
+                messagebox.showinfo("Informação", f"Paciente {numero}: Estado - {estado}\n\n\n Você é o próximo a ser atendido!")
+            elif posicao > 0 and posicao < 3:
+                messagebox.showinfo("Informação", f"Paciente {numero}: Posição na fila - {posicao}, Estado - {estado}\n\n\n Aguarde, seu atendimento está se aproximando.")
+            elif posicao > 3 and posicao < 6:
+                messagebox.showinfo("Informação", f"Paciente {numero}: Posição na fila - {posicao}, Estado - {estado}\n\n\n Há poucos pacientes a frente!")
+            else:
+                messagebox.showinfo("Informação", f"Paciente {numero}: Posição na fila - {posicao}, Estado - {estado}\n\n\n Há muitos pacientes a frente.")
         else:
             messagebox.showinfo("Informação", f"Paciente {numero} não está na fila.")
