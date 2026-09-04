@@ -9,14 +9,14 @@ class Sistema:
         self.pacientes = {}
         self.ultimo_chamado = None
 
-    def  cadastrar_ficha_simulada(self, nome_paciente):
+    def  cadastrar_paciente(self, nome_paciente):
         if nome_paciente in self.pacientes:
             print(f"Paciente {nome_paciente} já está cadastrado.")
             return False
         self.pacientes[nome_paciente] = {"status": STATUS_AGUARDANDO}
         return True
 
-    def chamar_proxima_ficha(self):
+    def chamar_proximo_paciente(self):
         for nome_paciente, ficha in self.pacientes.items():
             if ficha["status"] == STATUS_AGUARDANDO:
                 ficha["status"] = STATUS_CHAMADO
@@ -24,7 +24,7 @@ class Sistema:
                 return nome_paciente
         return None
 
-    def rechamar_ficha(self, nome_paciente):
+    def rechamar_paciente(self, nome_paciente):
         if nome_paciente in self.pacientes and self.pacientes[nome_paciente]["status"] == STATUS_CHAMADO:
             print(f"Paciente {nome_paciente} foi rechamado.")
             return True
