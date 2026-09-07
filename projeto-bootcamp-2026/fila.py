@@ -42,15 +42,6 @@ class Sistema:
             return True
         return False
 
-    def visualizar_pacientes_aguardando(self):
-        aguardando = []
-        for nome_paciente, ficha in self.pacientes.items():
-            if ficha["status"] == STATUS_AGUARDANDO:
-                print(f"Paciente {nome_paciente}: Aguardando")
-                aguardando.append(nome_paciente)
-        if not aguardando:
-            print("Não há pacientes aguardando.")
-
     def consultar_posicao(self, nome):
         if nome not in self.pacientes:
             print(f"Paciente {nome} não encontrado.")
